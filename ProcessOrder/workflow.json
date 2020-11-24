@@ -79,7 +79,7 @@
                         "subscriptionName": "ordersubmittedsubscription"
                     },
                     "serviceProviderConfiguration": {
-                        "connectionName": "serviceBus",
+                        "connectionName": "serviceBus-2",
                         "operationId": "receiveTopicMessages",
                         "serviceProviderId": "/serviceProviders/serviceBus"
                     }

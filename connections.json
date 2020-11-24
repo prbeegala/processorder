@@ -8,6 +8,15 @@
         "id": "/serviceProviders/serviceBus"
       },
       "displayName": "sbconn"
+    },
+    "serviceBus-2": {
+      "parameterValues": {
+        "connectionString": "@appsetting('serviceBus-2-connectionString')"
+      },
+      "serviceProvider": {
+        "id": "/serviceProviders/serviceBus"
+      },
+      "displayName": "sbpb"
     }
   },
   "managedApiConnections": {
