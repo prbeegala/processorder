@@ -1,0 +1,93 @@
+{
+    "definition": {
+        "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+        "actions": {
+            "Loop_through_orders": {
+                "type": "Foreach",
+                "foreach": "@triggerOutputs()?['body']",
+                "actions": {
+                    "Parse_JSON": {
+                        "type": "ParseJson",
+                        "inputs": {
+                            "content": "@items('Loop_through_orders')?['contentData']",
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "customerId": {
+                                        "type": "integer"
+                                    },
+                                    "deliveryDate": {
+                                        "type": "string"
+                                    },
+                                    "productName": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        },
+                        "runAfter": {}
+                    },
+                    "Get_Customer": {
+                        "type": "ApiConnection",
+                        "inputs": {
+                            "host": {
+                                "connection": {
+                                    "referenceName": "sql"
+                                }
+                            },
+                            "method": "get",
+                            "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('default'))},@{encodeURIComponent(encodeURIComponent('default'))}/tables/@{encodeURIComponent(encodeURIComponent('[dbo].[Customer]'))}/items/@{encodeURIComponent(encodeURIComponent(body('Parse_JSON')?['customerId']))}"
+                        },
+                        "runAfter": {
+                            "Parse_JSON": [
+                                "Succeeded"
+                            ]
+                        }
+                    },
+                    "Send_Confirmation_Email": {
+                        "type": "ApiConnection",
+                        "inputs": {
+                            "host": {
+                                "connection": {
+                                    "referenceName": "outlook"
+                                }
+                            },
+                            "method": "post",
+                            "body": {
+                                "To": "@body('Get_Customer')?['Email']",
+                                "Subject": "Order Received",
+                                "Body": "<p>Dear @{body('Get_Customer')?['CustomerName']},<br>\n<br>\nYour order for @{body('Parse_JSON')?['productName']} has been received and will be delivered on @{body('Parse_JSON')?['deliveryDate']}.<br>\nRegards,<br>\nContoso</p>"
+                            },
+                            "path": "/v2/Mail"
+                        },
+                        "runAfter": {
+                            "Get_Customer": [
+                                "Succeeded"
+                            ]
+                        }
+                    }
+                },
+                "runAfter": {}
+            }
+        },
+        "triggers": {
+            "When_messages_are_available_in_Service_Bus_topic": {
+                "type": "ServiceProvider",
+                "inputs": {
+                    "parameters": {
+                        "topicName": "ordersubmitted",
+                        "subscriptionName": "ordersubmittedsubscription"
+                    },
+                    "serviceProviderConfiguration": {
+                        "connectionName": "serviceBus",
+                        "operationId": "receiveTopicMessages",
+                        "serviceProviderId": "/serviceProviders/serviceBus"
+                    }
+                }
+            }
+        },
+        "contentVersion": "1.0.0.0",
+        "outputs": {}
+    },
+    "kind": "Stateful"
+}
