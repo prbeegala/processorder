@@ -56,7 +56,7 @@
                             "body": {
                                 "To": "@body('Get_Customer')?['Email']",
                                 "Subject": "Order Received",
-                                "Body": "<p>Dear @{body('Get_Customer')?['CustomerName']},<br>\n<br>\nYour order for @{body('Parse_JSON')?['productName']} has been received and will be delivered on @{body('Parse_JSON')?['deliveryDate']}.<br>\n<br>\nRegards,<br>\nContoso</p>"
+                                "Body": "<p>Dear @{body('Get_Customer')?['CustomerName']},<br>\n<br>\nYour order for @{body('Parse_JSON')?['productName']} has been received and will be delivered on @{body('Parse_JSON')?['deliveryDate']}.<br>\n<br>\nMerry Christmas and Happy New Year.<br>\n<br>\nRegards,<br>\nContoso</p>"
                             },
                             "path": "/v2/Mail"
                         },
