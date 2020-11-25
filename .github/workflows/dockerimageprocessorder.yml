@@ -25,5 +25,5 @@ jobs:
       with:
         username: ${{ secrets.REGISTRY_USERNAME }}
         password: ${{ secrets.REGISTRY_PASSWORD }}
-        repository: pbeegala/workflow
+        repository: pbeegala/processorder
         tags: latest
